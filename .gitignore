@@ -190,8 +190,6 @@ pyrightconfig.json
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
-# Static Site Generator
-public/
-
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
+
 
