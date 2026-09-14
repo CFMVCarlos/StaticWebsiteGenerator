@@ -1,3 +1,5 @@
+"""Command-line entry point for building the static website."""
+
 import os
 import shutil
 import sys
@@ -12,6 +14,7 @@ TEMPLATE_PATH = "template.html"
 
 
 def main() -> None:
+    """Execute site generation by copying static assets and compiling markdown."""
     basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
 
     print(f"Building site with basepath: '{basepath}'...")

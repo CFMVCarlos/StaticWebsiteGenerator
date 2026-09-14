@@ -1,3 +1,5 @@
+"""Inline markdown parsing and text node splitting utilities."""
+
 import re
 
 from textnode import TextNode, TextType
@@ -6,6 +8,27 @@ from textnode import TextNode, TextType
 def split_nodes_delimiter(
     old_nodes: list[TextNode], delimiter: str, text_type: TextType
 ) -> list[TextNode]:
+    """Split text nodes containing markdown delimiters into multiple text nodes.
+
+    Parameters
+    ----------
+    old_nodes : list[TextNode]
+        List of TextNode objects to inspect and split.
+    delimiter : str
+        Delimiter string marking formatted text (e.g., '`', '**', '*').
+    text_type : TextType
+        Target TextType for text found within delimiter pairs.
+
+    Returns
+    -------
+    list[TextNode]
+        New list of TextNode objects with delimited sections converted.
+
+    Raises
+    ------
+    ValueError
+        If a closing delimiter is missing in a formatted text section.
+    """
     new_nodes: list[TextNode] = []
     for old_node in old_nodes:
         if old_node.text_type != TextType.TEXT:
@@ -29,16 +52,57 @@ def split_nodes_delimiter(
 
 
 def extract_markdown_images(text: str) -> list[tuple[str, str]]:
+    """Extract markdown image alt-texts and URLs from raw text.
+
+    Parameters
+    ----------
+    text : str
+        Raw markdown string containing potential image syntax.
+
+    Returns
+    -------
+    list[tuple[str, str]]
+        List of tuples containing (alt_text, url) pairs for each markdown image.
+    """
     pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
     return re.findall(pattern, text)
 
 
 def extract_markdown_links(text: str) -> list[tuple[str, str]]:
+    """Extract markdown link texts and target URLs from raw text.
+
+    Parameters
+    ----------
+    text : str
+        Raw markdown string containing potential link syntax.
+
+    Returns
+    -------
+    list[tuple[str, str]]
+        List of tuples containing (anchor_text, url) pairs for each markdown link.
+    """
     pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
     return re.findall(pattern, text)
 
 
 def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
+    """Split text nodes containing markdown images into TEXT and IMAGE nodes.
+
+    Parameters
+    ----------
+    old_nodes : list[TextNode]
+        List of TextNode objects to inspect for markdown images.
+
+    Returns
+    -------
+    list[TextNode]
+        New list of TextNode objects with markdown images converted into IMAGE nodes.
+
+    Raises
+    ------
+    ValueError
+        If an extracted markdown image cannot be found during string splitting.
+    """
     new_nodes: list[TextNode] = []
     for old_node in old_nodes:
         if old_node.text_type != TextType.TEXT:
@@ -66,6 +130,23 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
 
 
 def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
+    """Split text nodes containing markdown links into TEXT and LINK nodes.
+
+    Parameters
+    ----------
+    old_nodes : list[TextNode]
+        List of TextNode objects to inspect for markdown links.
+
+    Returns
+    -------
+    list[TextNode]
+        New list of TextNode objects with markdown links converted into LINK nodes.
+
+    Raises
+    ------
+    ValueError
+        If an extracted markdown link cannot be found during string splitting.
+    """
     new_nodes: list[TextNode] = []
     for old_node in old_nodes:
         if old_node.text_type != TextType.TEXT:
@@ -93,6 +174,18 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
 
 
 def text_to_textnodes(text: str) -> list[TextNode]:
+    """Convert a raw markdown string into a list of parsed TextNode objects.
+
+    Parameters
+    ----------
+    text : str
+        Raw markdown text to tokenize into inline text nodes.
+
+    Returns
+    -------
+    list[TextNode]
+        List of parsed TextNode objects covering all supported inline formats.
+    """
     nodes = [TextNode(text, TextType.TEXT)]
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
     nodes = split_nodes_image(nodes)

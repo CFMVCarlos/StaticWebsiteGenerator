@@ -1,3 +1,5 @@
+"""HTML page generation utilities from markdown templates."""
+
 import os
 
 from splitblock import extract_title, markdown_to_html_node
@@ -6,6 +8,19 @@ from splitblock import extract_title, markdown_to_html_node
 def generate_page(
     from_path: str, template_path: str, dest_path: str, basepath: str = "/"
 ) -> None:
+    """Generate a single HTML page from a markdown file and HTML template.
+
+    Parameters
+    ----------
+    from_path : str
+        Path to the input markdown file.
+    template_path : str
+        Path to the HTML template file containing placeholders.
+    dest_path : str
+        Destination path where the rendered HTML page will be saved.
+    basepath : str
+        Root URL base path for link and asset references, by default "/".
+    """
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, "r", encoding="utf-8") as f:
@@ -40,6 +55,19 @@ def generate_pages_recursive(
     dest_dir_path: str,
     basepath: str = "/",
 ) -> None:
+    """Recursively discover and render all markdown files into HTML pages.
+
+    Parameters
+    ----------
+    dir_path_content : str
+        Root directory containing source markdown files.
+    template_path : str
+        Path to the HTML template file.
+    dest_dir_path : str
+        Target root directory where HTML files and folders are created.
+    basepath : str
+        Root URL base path for link and asset references, by default "/".
+    """
     for item in os.listdir(dir_path_content):
         from_path = os.path.join(dir_path_content, item)
         dest_path = os.path.join(dest_dir_path, item)
