@@ -1,9 +1,13 @@
+"""Inline text representation and conversion to HTML leaf nodes."""
+
 from enum import Enum
 
 from htmlnode import LeafNode
 
 
 class TextType(Enum):
+    """Enumeration of supported inline text formats."""
+
     TEXT = 1
     BOLD = 2
     ITALIC = 3
@@ -13,6 +17,27 @@ class TextType(Enum):
 
 
 class TextNode:
+    """Represents an inline text chunk with formatting type and optional URL.
+
+    Parameters
+    ----------
+    text : str
+        The raw text content.
+    text_type : TextType
+        The inline text formatting type.
+    url : str | None
+        Target URL for links or image source URLs, by default None.
+
+    Attributes
+    ----------
+    text : str
+        The raw text content.
+    text_type : TextType
+        The inline text formatting type.
+    url : str | None
+        Target URL for links or image source URLs.
+    """
+
     text: str
     text_type: TextType
     url: str | None
@@ -23,6 +48,18 @@ class TextNode:
         self.url = url
 
     def __eq__(self, value: object, /) -> bool:
+        """Check equality between this TextNode and another object.
+
+        Parameters
+        ----------
+        value : object
+            Object to compare against.
+
+        Returns
+        -------
+        bool
+            True if value is a TextNode with matching attributes, False otherwise.
+        """
         if not isinstance(value, TextNode):
             return False
         return (
@@ -32,10 +69,34 @@ class TextNode:
         )
 
     def __repr__(self) -> str:
+        """Return the string representation of the TextNode.
+
+        Returns
+        -------
+        str
+            Formatted representation string.
+        """
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
 
 
 def text_node_to_html_node(text_node: TextNode) -> LeafNode:
+    """Convert an inline TextNode to its corresponding HTML LeafNode.
+
+    Parameters
+    ----------
+    text_node : TextNode
+        Input TextNode to convert.
+
+    Returns
+    -------
+    LeafNode
+        Renderable HTML LeafNode with appropriate tag and attributes.
+
+    Raises
+    ------
+    ValueError
+        If the TextNode has an unrecognized text_type.
+    """
     match text_node.text_type:
         case TextType.TEXT:
             return LeafNode(None, text_node.text)

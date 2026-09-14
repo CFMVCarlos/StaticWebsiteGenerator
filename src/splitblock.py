@@ -1,3 +1,5 @@
+"""Block-level markdown parsing and HTML AST generation."""
+
 from enum import Enum
 
 from htmlnode import HTMLNode, ParentNode
@@ -6,6 +8,8 @@ from textnode import TextNode, TextType, text_node_to_html_node
 
 
 class BlockType(Enum):
+    """Enumeration of supported markdown block types."""
+
     PARAGRAPH = "paragraph"
     HEADING = "heading"
     CODE = "code"
@@ -15,6 +19,18 @@ class BlockType(Enum):
 
 
 def markdown_to_blocks(markdown: str) -> list[str]:
+    """Split a markdown document into distinct blocks separated by blank lines.
+
+    Parameters
+    ----------
+    markdown : str
+        Raw markdown document text.
+
+    Returns
+    -------
+    list[str]
+        List of trimmed block strings with empty blocks filtered out.
+    """
     blocks = markdown.split("\n\n")
     filtered_blocks: list[str] = []
     for block in blocks:
@@ -25,6 +41,18 @@ def markdown_to_blocks(markdown: str) -> list[str]:
 
 
 def block_to_block_type(block: str) -> BlockType:
+    """Determine the block type of a single markdown block.
+
+    Parameters
+    ----------
+    block : str
+        A single stripped markdown block string.
+
+    Returns
+    -------
+    BlockType
+        The identified BlockType enum variant for the block.
+    """
     if block.startswith(("# ", "## ", "### ", "#### ", "##### ", "###### ")):
         return BlockType.HEADING
 
@@ -46,6 +74,18 @@ def block_to_block_type(block: str) -> BlockType:
 
 
 def text_to_children(text: str) -> list[HTMLNode]:
+    """Convert an inline markdown string into a list of HTMLNode objects.
+
+    Parameters
+    ----------
+    text : str
+        Inline markdown text to convert into child HTML nodes.
+
+    Returns
+    -------
+    list[HTMLNode]
+        List of rendered HTMLNode instances representing inline formatting.
+    """
     text_nodes = text_to_textnodes(text)
     children: list[HTMLNode] = []
     for text_node in text_nodes:
@@ -55,6 +95,18 @@ def text_to_children(text: str) -> list[HTMLNode]:
 
 
 def paragraph_to_html_node(block: str) -> ParentNode:
+    """Convert a paragraph markdown block into a 'p' ParentNode.
+
+    Parameters
+    ----------
+    block : str
+        Markdown paragraph block string.
+
+    Returns
+    -------
+    ParentNode
+        Rendered 'p' HTML ParentNode containing inline children.
+    """
     lines = block.split("\n")
     paragraph = " ".join(lines)
     children = text_to_children(paragraph)
@@ -62,6 +114,23 @@ def paragraph_to_html_node(block: str) -> ParentNode:
 
 
 def heading_to_html_node(block: str) -> ParentNode:
+    """Convert a heading markdown block into an 'h1'-'h6' ParentNode.
+
+    Parameters
+    ----------
+    block : str
+        Markdown heading block string.
+
+    Returns
+    -------
+    ParentNode
+        Rendered 'h1' through 'h6' HTML ParentNode.
+
+    Raises
+    ------
+    ValueError
+        If the heading level is not between 1 and 6, or syntax is invalid.
+    """
     level = 0
     for char in block:
         if char == "#":
@@ -76,6 +145,23 @@ def heading_to_html_node(block: str) -> ParentNode:
 
 
 def code_to_html_node(block: str) -> ParentNode:
+    """Convert a code markdown block into a 'pre' and 'code' ParentNode.
+
+    Parameters
+    ----------
+    block : str
+        Markdown code block enclosed in triple backticks.
+
+    Returns
+    -------
+    ParentNode
+        Rendered 'pre' node containing a child 'code' node.
+
+    Raises
+    ------
+    ValueError
+        If the block is not properly enclosed in triple backticks.
+    """
     if not block.startswith("```\n") or not block.endswith("```"):
         raise ValueError("Invalid code block")
     text = block[4:-3]
@@ -86,6 +172,23 @@ def code_to_html_node(block: str) -> ParentNode:
 
 
 def quote_to_html_node(block: str) -> ParentNode:
+    """Convert a blockquote markdown block into a 'blockquote' ParentNode.
+
+    Parameters
+    ----------
+    block : str
+        Markdown blockquote block string where each line starts with '>'.
+
+    Returns
+    -------
+    ParentNode
+        Rendered 'blockquote' HTML ParentNode.
+
+    Raises
+    ------
+    ValueError
+        If any line does not start with '>'.
+    """
     lines = block.split("\n")
     new_lines: list[str] = []
     for line in lines:
@@ -98,6 +201,23 @@ def quote_to_html_node(block: str) -> ParentNode:
 
 
 def ulist_to_html_node(block: str) -> ParentNode:
+    """Convert an unordered list markdown block into a 'ul' ParentNode.
+
+    Parameters
+    ----------
+    block : str
+        Markdown unordered list block where each line starts with '- '.
+
+    Returns
+    -------
+    ParentNode
+        Rendered 'ul' HTML ParentNode containing 'li' child nodes.
+
+    Raises
+    ------
+    ValueError
+        If any line does not start with '- '.
+    """
     lines = block.split("\n")
     items: list[HTMLNode] = []
     for line in lines:
@@ -110,6 +230,23 @@ def ulist_to_html_node(block: str) -> ParentNode:
 
 
 def olist_to_html_node(block: str) -> ParentNode:
+    """Convert an ordered list markdown block into an 'ol' ParentNode.
+
+    Parameters
+    ----------
+    block : str
+        Markdown ordered list block where each line starts with sequential numbers.
+
+    Returns
+    -------
+    ParentNode
+        Rendered 'ol' HTML ParentNode containing 'li' child nodes.
+
+    Raises
+    ------
+    ValueError
+        If any line does not match the expected sequential 'N. ' prefix.
+    """
     lines = block.split("\n")
     items: list[HTMLNode] = []
     for i, line in enumerate(lines, start=1):
@@ -123,6 +260,23 @@ def olist_to_html_node(block: str) -> ParentNode:
 
 
 def block_to_html_node(block: str) -> ParentNode:
+    """Dispatch a markdown block to its corresponding HTML ParentNode converter.
+
+    Parameters
+    ----------
+    block : str
+        A single markdown block string.
+
+    Returns
+    -------
+    ParentNode
+        Corresponding HTML ParentNode representation.
+
+    Raises
+    ------
+    ValueError
+        If the block type is invalid or unsupported.
+    """
     block_type = block_to_block_type(block)
     match block_type:
         case BlockType.PARAGRAPH:
@@ -142,6 +296,18 @@ def block_to_html_node(block: str) -> ParentNode:
 
 
 def markdown_to_html_node(markdown: str) -> ParentNode:
+    """Convert a full markdown document string into a root 'div' ParentNode.
+
+    Parameters
+    ----------
+    markdown : str
+        Full raw markdown document string.
+
+    Returns
+    -------
+    ParentNode
+        Root 'div' ParentNode containing all parsed block HTML nodes.
+    """
     blocks = markdown_to_blocks(markdown)
     children: list[HTMLNode] = []
     for block in blocks:
@@ -151,6 +317,23 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
 
 
 def extract_title(markdown: str) -> str:
+    """Extract the primary H1 header title from a markdown document.
+
+    Parameters
+    ----------
+    markdown : str
+        Markdown document string containing an H1 header.
+
+    Returns
+    -------
+    str
+        Extracted H1 header title text with leading/trailing whitespace removed.
+
+    Raises
+    ------
+    ValueError
+        If no line starting with '# ' is found in the markdown document.
+    """
     lines = markdown.split("\n")
     for line in lines:
         if line.startswith("# "):
