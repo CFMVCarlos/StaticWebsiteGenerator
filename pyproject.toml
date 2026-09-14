@@ -1,0 +1,25 @@
+[project]
+name = "staticwebsitegenerator"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.40.1",
+    "pydoclint>=0.9.1",
+    "ruff>=0.16.7",
+    "ty>=0.0.80",
+]
+
+[tool.pydoclint]
+style = "numpy"
+exclude = '\.venv|\.agents|__pycache__'
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+exclude = [".venv", ".agents"]
+
+
