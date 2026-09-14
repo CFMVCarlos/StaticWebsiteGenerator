@@ -3,7 +3,9 @@ import os
 from splitblock import extract_title, markdown_to_html_node
 
 
-def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
+def generate_page(
+    from_path: str, template_path: str, dest_path: str, basepath: str = "/"
+) -> None:
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, "r", encoding="utf-8") as f:
@@ -20,6 +22,9 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
     full_html = template_content.replace("{{ Title }}", title).replace(
         "{{ Content }}", html_content
     )
+    full_html = full_html.replace('href="/', f'href="{basepath}').replace(
+        'src="/', f'src="{basepath}'
+    )
 
     dest_dir = os.path.dirname(dest_path)
     if dest_dir != "":
@@ -30,7 +35,10 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
 
 
 def generate_pages_recursive(
-    dir_path_content: str, template_path: str, dest_dir_path: str
+    dir_path_content: str,
+    template_path: str,
+    dest_dir_path: str,
+    basepath: str = "/",
 ) -> None:
     for item in os.listdir(dir_path_content):
         from_path = os.path.join(dir_path_content, item)
@@ -38,6 +46,6 @@ def generate_pages_recursive(
         if os.path.isfile(from_path):
             if from_path.endswith(".md"):
                 dest_html_path = dest_path[:-3] + ".html"
-                generate_page(from_path, template_path, dest_html_path)
+                generate_page(from_path, template_path, dest_html_path, basepath)
         else:
-            generate_pages_recursive(from_path, template_path, dest_path)
+            generate_pages_recursive(from_path, template_path, dest_path, basepath)
