@@ -42,9 +42,10 @@ The project demonstrates tree data structures, recursive file traversal, tokeniz
 
 ```
 StaticWebsiteGenerator/
-├── build.sh                  # Builds site with GitHub Pages basepath (/StaticWebsiteGenerator/)
-├── main.sh                   # Builds site locally with basepath / and starts dev server (port 8888)
-├── test.sh                   # Runs unittest discovery across all unit test suites
+├── scripts/
+│   ├── build.sh              # Builds site with GitHub Pages basepath (/StaticWebsiteGenerator/)
+│   ├── main.sh               # Builds site locally with basepath / and starts dev server (port 8888)
+│   └── test.sh               # Runs unittest discovery across all unit test suites
 ├── template.html             # Base HTML document template containing {{ Title }} and {{ Content }}
 ├── content/                  # Markdown source files
 │   ├── index.md              # Homepage content
@@ -109,9 +110,9 @@ The repository provides automated bash shell scripts for common tasks:
 
 | Command | Action | Description |
 |---|---|---|
-| `./main.sh` | **Local Development** | Compiles site with basepath `"/"` to `docs/` and starts an HTTP server at `http://localhost:8888` |
-| `./build.sh` | **Production Build** | Compiles site with basepath `"/StaticWebsiteGenerator/"` for GitHub Pages |
-| `./test.sh` | **Run Tests** | Executes all 98 unit tests via Python's standard `unittest` framework |
+| `./scripts/main.sh` | **Local Development** | Compiles site with basepath `"/"` to `docs/` and starts an HTTP server at `http://localhost:8888` |
+| `./scripts/build.sh` | **Production Build** | Compiles site with basepath `"/StaticWebsiteGenerator/"` for GitHub Pages |
+| `./scripts/test.sh` | **Run Tests** | Executes all 98 unit tests via Python's standard `unittest` framework |
 
 You can also run the generator directly via Python:
 
@@ -131,7 +132,7 @@ The codebase adheres to strict linting, type-checking, and docstring guidelines:
 
 ```bash
 # 1. Run unit test suite (98 tests)
-./test.sh
+./scripts/test.sh
 
 # 2. Lint and format checks
 uv run ruff check
