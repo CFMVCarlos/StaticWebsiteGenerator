@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "staticwebsitegenerator"
 version = "0.1.0"
@@ -8,18 +12,46 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "basedpyright>=1.40.1",
-    "pydoclint>=0.9.1",
-    "ruff>=0.16.7",
-    "ty>=0.0.80",
+    "basedpyright>=1.28.0",
+    "pydoclint>=0.6.0",
+    "pytest>=8.0.0",
+    "ruff>=0.9.0",
+    "ty>=0.0.86",
 ]
 
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.ruff]
+line-length = 88
+preview = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "CPY",
+    "FIX",
+    "TD",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "SLF001"]
+
 [tool.pydoclint]
-style = "numpy"
-exclude = '\.venv|\.agents|__pycache__'
+exclude = ".git|.tox|.venv|build|dist|.uv-cache|.ruff_cache"
+skip-checking-short-docstrings = false
+check-style-mismatch = true
+check-arg-defaults = true
+show-filenames-in-every-violation-message = true
+check-class-attributes = false
 
 [tool.basedpyright]
+pythonVersion = "3.13"
 typeCheckingMode = "standard"
-exclude = [".venv", ".agents"]
 
-
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
