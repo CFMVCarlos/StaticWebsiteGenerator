@@ -18,8 +18,8 @@ def generate_page(
         Path to the HTML template file containing placeholders.
     dest_path : str
         Destination path where the rendered HTML page will be saved.
-    basepath : str
-        Root URL base path for link and asset references, by default "/".
+    basepath : str, default="/"
+        Root URL base path for link and asset references.
     """
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
@@ -65,8 +65,8 @@ def generate_pages_recursive(
         Path to the HTML template file.
     dest_dir_path : str
         Target root directory where HTML files and folders are created.
-    basepath : str
-        Root URL base path for link and asset references, by default "/".
+    basepath : str, default="/"
+        Root URL base path for link and asset references.
     """
     for item in os.listdir(dir_path_content):
         from_path = os.path.join(dir_path_content, item)

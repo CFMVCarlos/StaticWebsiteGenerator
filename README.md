@@ -159,3 +159,11 @@ The site is automatically deployed to GitHub Pages at:
 ## 📜 License & Credits
 
 Built by [Carlos](https://github.com/CFMVCarlos) as part of the [Boot.dev](https://www.boot.dev/) curriculum on Functional Programming and Static Site Generators.
+
+## Development
+
+To enable automated commit message validation with gitlint:
+```bash
+git config core.hooksPath .githooks
+```
+

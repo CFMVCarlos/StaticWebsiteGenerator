@@ -25,8 +25,8 @@ class TextNode:
         The raw text content.
     text_type : TextType
         The inline text formatting type.
-    url : str | None
-        Target URL for links or image source URLs, by default None.
+    url : str | None, default=None
+        Target URL for links or image source URLs.
 
     Attributes
     ----------

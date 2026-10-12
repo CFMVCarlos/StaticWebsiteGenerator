@@ -6,15 +6,14 @@ class HTMLNode:
 
     Parameters
     ----------
-    tag : str | None
-        HTML tag name (e.g., 'p', 'div', 'a'), by default None.
-    value : str | None
-        Text content of the node, by default None.
-    children : list[HTMLNode] | None
-        Nested child HTML nodes, by default None.
-    props : dict[str, str] | None
-        Key-value attribute pairs (e.g., {'href': 'https://example.com'}),
-        by default None.
+    tag : str | None, default=None
+        HTML tag name (e.g., 'p', 'div', 'a').
+    value : str | None, default=None
+        Text content of the node.
+    children : list["HTMLNode"] | None, default=None
+        Nested child HTML nodes.
+    props : dict[str, str] | None, default=None
+        Key-value attribute pairs (e.g., {'href': 'https://example.com'}).
 
     Attributes
     ----------
@@ -92,8 +91,8 @@ class LeafNode(HTMLNode):
         HTML tag name, or None for raw text.
     value : str | None
         Text content of the leaf node.
-    props : dict[str, str] | None
-        Key-value attribute pairs, by default None.
+    props : dict[str, str] | None, default=None
+        Key-value attribute pairs.
     """
 
     def __init__(
@@ -145,8 +144,8 @@ class ParentNode(HTMLNode):
         HTML tag name.
     children : list["HTMLNode"] | None
         Non-empty list of child HTML nodes.
-    props : dict[str, str] | None
-        Key-value attribute pairs, by default None.
+    props : dict[str, str] | None, default=None
+        Key-value attribute pairs.
     """
 
     def __init__(
